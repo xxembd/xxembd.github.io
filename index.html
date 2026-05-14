@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bohdan Travianko — QA Manual Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --accent: #c8f135;
+    --accent2: #3df5c1;
+    --text: #f0f0f0;
+    --muted: #666;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'QA';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(120px, 20vw, 220px);
+    color: transparent;
+    -webkit-text-stroke: 1px #1e1e1e;
+    pointer-events: none;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  h1 {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(42px, 8vw, 80px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 20px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .contacts a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .contacts a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* SECTIONS */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    line-height: 1.1;
+  }
+
+  /* SUMMARY */
+  .summary-text {
+    font-size: 17px;
+    line-height: 1.75;
+    color: #aaa;
+    max-width: 640px;
+  }
+
+  .summary-text strong { color: var(--text); }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .skill-item {
+    background: var(--bg);
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #aaa;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .skill-item::before {
+    content: '▸';
+    color: var(--accent);
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .skill-item:hover { background: #141414; color: var(--text); }
+
+  /* PROJECTS */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .project-card:hover { border-color: #333; }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .project-card:last-child::before { background: var(--accent2); }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .project-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .project-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    padding-top: 4px;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 20px;
+    line-height: 1.65;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    background: #161616;
+    border: 1px solid var(--border);
+    color: #777;
+    transition: all 0.2s;
+  }
+
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* TOOLS */
+  .tools-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .tool-pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    color: #888;
+    background: var(--surface);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tool-pill:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  /* EDUCATION */
+  .edu-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .edu-title { font-size: 18px; font-weight: 600; }
+  .edu-sub { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .edu-year {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 6px 14px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 0;
+    text-align: center;
+  }
+
+  .footer-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .footer-email {
+    font-size: clamp(20px, 4vw, 36px);
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color 0.2s;
+    display: inline-block;
+  }
+
+  .footer-email:hover { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    header { padding: 48px 0 40px; }
+    section { padding: 40px 0; }
+    .project-card { padding: 24px 20px; }
+    header::after { font-size: 100px; opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">Available for hire</div>
+    <h1>Bohdan<br><span>Travianko</span></h1>
+    <p class="subtitle">// QA Manual Engineer · Strong Junior · 1+ yr commercial exp</p>
+    <div class="contacts">
+      <a href="mailto:btravyanko@gmail.com">btravyanko@gmail.com</a>
+      <a href="tel:+380732307950">+38 (073) 230 79 50</a>
+      <a href="#">Uzhhorod, Ukraine</a>
+      <a href="#">Remote / Hybrid</a>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <section>
+    <div class="section-label">01 — About</div>
+    <p class="summary-text">
+      Manual QA Engineer with <strong>1+ year of commercial experience</strong> testing complex web platforms. I work with <strong>API testing, payment integrations, RBAC, multi-currency systems</strong>, and real-world business logic. I use AI tools daily to speed up test design, analysis, and documentation. I care about product quality, not just checklist coverage.
+    </p>
+  </section>
+
+  <!-- SKILLS -->
+  <section>
+    <div class="section-label">02 — Skills</div>
+    <div class="skills-grid">
+      <div class="skill-item">Functional testing</div>
+      <div class="skill-item">Regression testing</div>
+      <div class="skill-item">Exploratory testing</div>
+      <div class="skill-item">API testing (REST)</div>
+      <div class="skill-item">OAuth 2.0 testing</div>
+      <div class="skill-item">Payment integrations</div>
+      <div class="skill-item">SQL / MySQL</div>
+      <div class="skill-item">RBAC testing</div>
+      <div class="skill-item">Cross-browser testing</div>
+      <div class="skill-item">Multi-language / currency UI</div>
+      <div class="skill-item">Smoke / Sanity testing</div>
+      <div class="skill-item">Bug lifecycle mgmt</div>
+      <div class="skill-item">Test case design</div>
+      <div class="skill-item">SDLC / STLC</div>
+      <div class="skill-item">Agile / Scrum</div>
+      <div class="skill-item">AI-assisted testing</div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section>
+    <div class="section-label">03 — Projects</div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title">Premium Event Venue Booking Platform</div>
+        <div class="project-period">Nov 2025 — May 2026</div>
+      </div>
+      <p class="project-desc">
+        B2B web platform for booking premium corporate spaces. Built for large-scale event coordination with complex payment flows. Tested real-time availability logic, multi-currency transactions, Stripe/PayPal integrations, and add-on service management.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Stripe / PayPal</span>
+        <span class="tag">Multi-currency</span>
+        <span class="tag">Real-time booking</span>
+        <span class="tag">API testing</span>
+        <span class="tag">Regression</span>
+        <span class="tag">Postman</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-title">Corporate Asset & Equipment Management Platform</div>
+        <div class="project-period">Jul 2025 — Nov 2025</div>
+      </div>
+      <p class="project-desc">
+        Internal web system for tracking company-owned assets with real-time status updates. Covered RBAC logic for managers and employees, HR/accounting integrations, automated notifications, and dashboard analytics.
+      </p>
+      <div class="project-tags">
+        <span class="tag">RBAC</span>
+        <span class="tag">SQL validation</span>
+        <span class="tag">HR integration</span>
+        <span class="tag">Jira / TestRail</span>
+        <span class="tag">Functional testing</span>
+        <span class="tag">Chrome DevTools</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section>
+    <div class="section-label">04 — Tools</div>
+    <div class="tools-row">
+      <div class="tool-pill">Postman</div>
+      <div class="tool-pill">Swagger</div>
+      <div class="tool-pill">Jira</div>
+      <div class="tool-pill">TestRail</div>
+      <div class="tool-pill">Zephyr</div>
+      <div class="tool-pill">Linear</div>
+      <div class="tool-pill">MySQL</div>
+      <div class="tool-pill">Chrome DevTools</div>
+      <div class="tool-pill">JMeter</div>
+      <div class="tool-pill">Claude</div>
+      <div class="tool-pill">ChatGPT</div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section>
+    <div class="section-label">05 — Education</div>
+    <div class="edu-block">
+      <div>
+        <div class="edu-title">Uzhhorod National University</div>
+        <div class="edu-sub">Bachelor of Science — Cybersecurity</div>
+      </div>
+      <div class="edu-year">2022 — 2026</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-cta">// Let's work together</p>
+    <a class="footer-email" href="mailto:btravyanko@gmail.com">btravyanko@gmail.com</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
